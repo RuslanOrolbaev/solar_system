@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
-import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
-import 'package:solar_system/model/space_object.dart';
+import 'package:logging/logging.dart';
 import 'package:solar_system/model/planet.dart';
-import 'package:solar_system/view_model/space_object_widget.dart';
+import 'package:solar_system/view_model/solar_builder.dart';
+
+Logger _logger = Logger('Home screen');
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,15 +13,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Size _size;
-
-  SpaceObject sun = SpaceObject(color: Colors.yellow, radius: 50);
+  late Size _screenSize;
+  bool _isAnimationRunning = false;
 
   Planet mercury = Planet(
-      radius: 30,
+      radius: 10,
       color: Colors.brown,
       speed: 5,
-      distanceFromCenter: 50,
+      distanceFromCenter: 100,
       angleInDegrees: 80.0);
 
   Planet jupiter = Planet(
@@ -31,39 +30,53 @@ class _HomeScreenState extends State<HomeScreen> {
       distanceFromCenter: 300,
       angleInDegrees: 180);
 
+  Planet earth = Planet(
+      radius: 20,
+      color: Colors.blue,
+      speed: 4,
+      distanceFromCenter: 150,
+      angleInDegrees: 45);
+
+  Planet uran = Planet(
+      radius: 25,
+      color: Colors.indigo,
+      speed: 20,
+      distanceFromCenter: 500,
+      angleInDegrees: 160);
+
   List<Planet> planets = [];
 
   @override
   void initState() {
     planets.add(mercury);
-    planets.add(jupiter);
+    // planets.add(earth);
+    // planets.add(jupiter);
+    // planets.add(uran);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _size = MediaQuery.of(context).size;
+    _logger.info('running build');
+    _screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(body: Stack(children: solarBuilder(sun, planets, _size)));
+    return Scaffold(
+      body: SolarBuilder(
+          planets: planets,
+          screenSize: _screenSize,
+          animationRunning: _isAnimationRunning),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(
+              _isAnimationRunning
+                  ? Icons.stop_circle_outlined
+                  : Icons.play_circle_fill,
+              size: 40,
+              color: Colors.white),
+          onPressed: () {
+            setState(() {
+              _isAnimationRunning = !_isAnimationRunning;
+            });
+          }),
+    );
   }
-}
-
-List<Widget> solarBuilder(
-    SpaceObject sun, List<Planet> planets, Size screenSize) {
-  Offset screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
-  double longestDistance = longestPlanetDistance(planets);
-  double scaleModifier = calculateScaleModifier(screenSize, longestDistance);
-  List<Widget> spaceObjectWidgets = [
-    SpaceObjectWidget(
-        spaceObject: sun,
-        scaleModifier: scaleModifier,
-        screenCenter: screenCenter)
-  ];
-  for (Planet planet in planets) {
-    spaceObjectWidgets.add(SpaceObjectWidget(
-        spaceObject: planet,
-        scaleModifier: scaleModifier,
-        screenCenter: screenCenter));
-  }
-  return spaceObjectWidgets;
 }
