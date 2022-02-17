@@ -1,2 +1,3 @@
-const int fps = 60;
-const double frameRate = 1 / fps;
+const int fps = 24;
+const int microsecondsInSecond = 1000000;
+const int frameRenewalTimeInMicroseconds = microsecondsInSecond ~/ fps;

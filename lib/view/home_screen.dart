@@ -19,9 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Planet mercury = Planet(
       radius: 10,
       color: Colors.brown,
-      speed: 5,
-      distanceFromCenter: 100,
-      angleInDegrees: 80.0);
+      speed: 6,
+      distanceFromCenter: 120,
+      angleInDegrees: 0);
 
   Planet jupiter = Planet(
       radius: 50,
@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Planet earth = Planet(
       radius: 20,
       color: Colors.blue,
-      speed: 4,
+      speed: 40,
       distanceFromCenter: 150,
       angleInDegrees: 45);
 
@@ -49,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     planets.add(mercury);
-    // planets.add(earth);
-    // planets.add(jupiter);
+    planets.add(earth);
+    planets.add(jupiter);
     // planets.add(uran);
     super.initState();
   }
