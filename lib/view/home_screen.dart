@@ -49,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     planets.add(mercury);
-    // planets.add(earth);
-    // planets.add(jupiter);
+    planets.add(earth);
+    planets.add(jupiter);
     // planets.add(uran);
     super.initState();
   }
