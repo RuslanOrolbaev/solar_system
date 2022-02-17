@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
       radius: 10,
       color: Colors.brown,
       speed: 6,
-      distanceFromCenter: 100,
+      distanceFromCenter: 120,
       angleInDegrees: 0);
 
   Planet jupiter = Planet(
@@ -49,9 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     planets.add(mercury);
-    planets.add(earth);
-    planets.add(jupiter);
-    planets.add(uran);
+    // planets.add(earth);
+    // planets.add(jupiter);
+    // planets.add(uran);
     super.initState();
   }
 
@@ -61,12 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SafeArea(
-        child: SolarBuilder(
-            planets: planets,
-            screenSize: _screenSize,
-            animationRunning: _isAnimationRunning),
-      ),
+      body: SolarBuilder(
+          planets: planets,
+          screenSize: _screenSize,
+          animationRunning: _isAnimationRunning),
       floatingActionButton: FloatingActionButton(
           child: Icon(
               _isAnimationRunning

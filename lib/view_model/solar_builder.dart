@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
 import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
 import 'package:solar_system/model/space_object.dart';
-import 'package:solar_system/view_model/paint_space_objects.dart';
-import 'package:solar_system/view_model/space_object_widget.dart';
+import 'package:solar_system/view_model/paint_space_object.dart';
 
 import '../configuration.dart';
 import '../model/planet.dart';
@@ -32,7 +31,7 @@ class _SolarBuilderState extends State<SolarBuilder> {
   late double _scaleModifier;
   late double _longestDistance;
   late Timer _timer;
-  late SpaceObjectWidget sun;
+  late SpaceObject _sun;
 
   @override
   void initState() {
@@ -42,13 +41,10 @@ class _SolarBuilderState extends State<SolarBuilder> {
     _longestDistance = longestPlanetDistance(widget.planets);
     _scaleModifier =
         calculateScaleModifier(widget.screenSize, _longestDistance);
-    sun = SpaceObjectWidget(
-        spaceObject: SpaceObject(color: Colors.yellow, radius: 50),
-        scaleModifier: _scaleModifier,
-        screenCenter: _screenCenter);
     _timer = Timer.periodic(
         const Duration(microseconds: frameRenewalTimeInMicroseconds),
         drawFrame);
+    _sun = SpaceObject(radius: 100, color: Colors.yellow);
     super.initState();
   }
 
@@ -61,12 +57,24 @@ class _SolarBuilderState extends State<SolarBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-        willChange: true,
-        painter: PaintSpaceObjects(
-            spaceObjects: widget.planets,
+    List<Widget> planetWidgets = [];
+    planetWidgets.add(CustomPaint(
+        painter: PaintSpaceObject(
+            spaceObject: _sun,
             screenCenter: _screenCenter,
-            scaleModifier: _scaleModifier));
+            scaleModifier: _scaleModifier,
+
+            ///setting ShallRebuildWithSetState to false excludes Sun from rebuilding with each setState to optimize performance
+            shallRebuildWithSetState: false)));
+    for (Planet planet in widget.planets) {
+      planetWidgets.add(CustomPaint(
+          painter: PaintSpaceObject(
+        spaceObject: planet,
+        screenCenter: _screenCenter,
+        scaleModifier: _scaleModifier,
+      )));
+    }
+    return Stack(children: planetWidgets);
   }
 
   drawFrame(dynamic timestamp) {
