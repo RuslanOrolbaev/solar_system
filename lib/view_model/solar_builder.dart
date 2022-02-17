@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
 import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
 import 'package:solar_system/model/space_object.dart';
+import 'package:solar_system/view_model/paint_space_objects.dart';
 import 'package:solar_system/view_model/space_object_widget.dart';
 
 import '../configuration.dart';
@@ -32,7 +33,6 @@ class _SolarBuilderState extends State<SolarBuilder> {
   late double _longestDistance;
   late Timer _timer;
   late SpaceObjectWidget sun;
-  List<Widget> spaceObjectWidgets = [];
 
   @override
   void initState() {
@@ -46,8 +46,9 @@ class _SolarBuilderState extends State<SolarBuilder> {
         spaceObject: SpaceObject(color: Colors.yellow, radius: 50),
         scaleModifier: _scaleModifier,
         screenCenter: _screenCenter);
-    spaceObjectWidgets.add(sun);
-    _timer = Timer.periodic(const Duration(milliseconds: 1000), drawFrame);
+    _timer = Timer.periodic(
+        const Duration(microseconds: frameRenewalTimeInMicroseconds),
+        drawFrame);
     super.initState();
   }
 
@@ -60,23 +61,22 @@ class _SolarBuilderState extends State<SolarBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.info('running build');
-    for (Planet planet in widget.planets) {
-      spaceObjectWidgets.add(SpaceObjectWidget(
-          spaceObject: planet,
-          scaleModifier: _scaleModifier,
-          screenCenter: _screenCenter));
-    }
-    return Stack(children: spaceObjectWidgets);
+    return CustomPaint(
+        willChange: true,
+        painter: PaintSpaceObjects(
+            spaceObjects: widget.planets,
+            screenCenter: _screenCenter,
+            scaleModifier: _scaleModifier));
   }
 
   drawFrame(dynamic timestamp) {
-    _logger.info('drawFrame called');
     if (!widget.animationRunning) {
       return;
+    } else {
+      for (Planet planet in widget.planets) {
+        planet.angleInDegrees += planet.speed / fps;
+      }
+      setState(() {});
     }
-    print(widget.planets[0].angleInDegrees);
-    widget.planets[0].angleInDegrees++;
-    setState(() {});
   }
 }
