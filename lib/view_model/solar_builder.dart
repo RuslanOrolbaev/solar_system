@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:solar_system/configuration.dart';
 import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
 import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
+import 'package:solar_system/model/planet.dart';
 import 'package:solar_system/model/space_object.dart';
 import 'package:solar_system/view_model/paint_space_object.dart';
-
-import '../configuration.dart';
-import '../model/planet.dart';
 import 'package:logging/logging.dart';
 
 Logger _logger = Logger('SolarBuilder');
@@ -57,24 +56,25 @@ class _SolarBuilderState extends State<SolarBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> planetWidgets = [];
-    planetWidgets.add(CustomPaint(
+    List<Widget> spaceObjects = [];
+    spaceObjects.add(CustomPaint(
         painter: PaintSpaceObject(
             spaceObject: _sun,
             screenCenter: _screenCenter,
             scaleModifier: _scaleModifier,
 
-            ///setting ShallRebuildWithSetState to false excludes Sun from rebuilding with each setState to optimize performance
+            ///setting ShallRebuildWithSetState to false excludes motionless Sun
+            /// from rebuilding with each setState
             shallRebuildWithSetState: false)));
     for (Planet planet in widget.planets) {
-      planetWidgets.add(CustomPaint(
+      spaceObjects.add(CustomPaint(
           painter: PaintSpaceObject(
         spaceObject: planet,
         screenCenter: _screenCenter,
         scaleModifier: _scaleModifier,
       )));
     }
-    return Stack(children: planetWidgets);
+    return Stack(children: spaceObjects);
   }
 
   drawFrame(dynamic timestamp) {

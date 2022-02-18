@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:solar_system/model/planet.dart';
+import 'package:solar_system/view/app_button.dart';
 import 'package:solar_system/view_model/solar_builder.dart';
 
 Logger _logger = Logger('Home screen');
@@ -61,22 +62,35 @@ class _HomeScreenState extends State<HomeScreen> {
     _screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SolarBuilder(
-          planets: planets,
-          screenSize: _screenSize,
-          animationRunning: _isAnimationRunning),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(
-              _isAnimationRunning
-                  ? Icons.stop_circle_outlined
-                  : Icons.play_circle_fill,
-              size: 40,
-              color: Colors.white),
-          onPressed: () {
-            setState(() {
-              _isAnimationRunning = !_isAnimationRunning;
-            });
-          }),
+      body: Stack(children: [
+        SolarBuilder(
+            planets: planets,
+            screenSize: _screenSize,
+            animationRunning: _isAnimationRunning),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppButton(
+                    icon: Icon(Icons.add_circle),
+                    onPressed: () {
+                      print('something');
+                    }),
+                AppButton(
+                    icon: Icon(
+                      _isAnimationRunning
+                          ? Icons.stop_circle_outlined
+                          : Icons.play_circle_fill,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isAnimationRunning = !_isAnimationRunning;
+                      });
+                    })
+              ],
+            ))
+      ]),
     );
   }
 }
