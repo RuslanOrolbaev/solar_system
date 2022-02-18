@@ -23,7 +23,7 @@ class FieldForDoubles extends StatelessWidget {
           if (number != null && number.isNotEmpty) {
             return null;
           } else {
-            return 'the value has to be provided';
+            return 'value is required';
           }
         });
   }

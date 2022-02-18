@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:solar_system/configuration.dart';
+import 'package:solar_system/constants.dart';
 import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
 import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
 import 'package:solar_system/model/planet.dart';
@@ -30,17 +30,17 @@ class _SolarBuilderState extends State<SolarBuilder> {
 
   @override
   void initState() {
-    _logger.info('running initState');
+    _logger.info(initMessage);
     _timer = Timer.periodic(
         const Duration(microseconds: frameRenewalTimeInMicroseconds),
-        drawFrame);
+        _drawFrame);
     _sun = SpaceObject(radius: 100, color: Colors.yellow);
     super.initState();
   }
 
   @override
   void dispose() {
-    _logger.info('running dispose');
+    _logger.info(disposeMessage);
     _timer.cancel();
     super.dispose();
   }
@@ -48,7 +48,7 @@ class _SolarBuilderState extends State<SolarBuilder> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    calculateScale(screenSize);
+    _calculateScale(screenSize);
     List<Widget> spaceObjects = [];
     spaceObjects.add(CustomPaint(
         painter: PaintSpaceObject(
@@ -70,7 +70,7 @@ class _SolarBuilderState extends State<SolarBuilder> {
     return Stack(children: spaceObjects);
   }
 
-  drawFrame(dynamic timestamp) {
+  _drawFrame(dynamic timestamp) {
     if (!widget.animationRunning) {
       return;
     } else {
@@ -81,7 +81,7 @@ class _SolarBuilderState extends State<SolarBuilder> {
     }
   }
 
-  calculateScale(Size screenSize) {
+  _calculateScale(Size screenSize) {
     _screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
     _longestDistance = longestPlanetDistance(widget.planets);
     _scaleModifier = calculateScaleModifier(screenSize, _longestDistance);

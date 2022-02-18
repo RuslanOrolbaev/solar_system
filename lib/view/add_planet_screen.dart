@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:solar_system/constants.dart';
 import 'package:solar_system/model/planet.dart';
 import 'package:solar_system/model/providers/color_provider.dart';
 import 'package:solar_system/model/providers/planet_list_provider.dart';
@@ -24,7 +26,9 @@ class _AddPlanetScreenState extends State<AddPlanetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.info('running build');
+    final planetListProvider =
+        Provider.of<PlanetListProvider>(context, listen: false);
+    _logger.info(buildMessage);
     return Scaffold(
         body: SafeArea(
             child: Form(
@@ -60,7 +64,7 @@ class _AddPlanetScreenState extends State<AddPlanetScreen> {
                 onPressed: () {
                   FormState formState = _formKey.currentState!;
                   if (formState.validate()) {
-                    PlanetListProvider.instance.planetList.add(Planet(
+                    planetListProvider.add(Planet(
                         radius: double.parse(_radiusFieldController.text),
                         speed: double.parse(_speedFieldController.text),
                         distanceFromCenter:
@@ -79,6 +83,7 @@ class _AddPlanetScreenState extends State<AddPlanetScreen> {
 
   @override
   void dispose() {
+    _logger.info(disposeMessage);
     _distanceFieldController.dispose();
     _speedFieldController.dispose();
     _radiusFieldController.dispose();
