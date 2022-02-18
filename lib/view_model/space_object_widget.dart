@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solar_system/model/space_object.dart';
-import 'package:solar_system/view_model/paintSpaceObject.dart';
+import 'package:solar_system/view_model/paint_space_object.dart';
 
 class SpaceObjectWidget extends StatelessWidget {
   const SpaceObjectWidget(
