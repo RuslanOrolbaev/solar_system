@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:solar_system/model/planet.dart';
+import 'package:solar_system/model/providers/planet_list_provider.dart';
+import 'package:solar_system/view/add_planet_screen.dart';
+import 'package:solar_system/view/app_button.dart';
 import 'package:solar_system/view_model/solar_builder.dart';
 
 Logger _logger = Logger('Home screen');
@@ -13,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Size _screenSize;
   bool _isAnimationRunning = false;
 
   Planet mercury = Planet(
@@ -44,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       distanceFromCenter: 500,
       angleInDegrees: 160);
 
-  List<Planet> planets = [];
+  List<Planet> planets = PlanetListProvider.instance.planetList;
 
   @override
   void initState() {
@@ -58,25 +60,36 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     _logger.info('running build');
-    _screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      body: SolarBuilder(
-          planets: planets,
-          screenSize: _screenSize,
-          animationRunning: _isAnimationRunning),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(
-              _isAnimationRunning
-                  ? Icons.stop_circle_outlined
-                  : Icons.play_circle_fill,
-              size: 40,
-              color: Colors.white),
-          onPressed: () {
-            setState(() {
-              _isAnimationRunning = !_isAnimationRunning;
-            });
-          }),
+      body: Stack(children: [
+        SolarBuilder(planets: planets, animationRunning: _isAnimationRunning),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppButton(
+                    icon: const Icon(Icons.add_circle),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const AddPlanetScreen();
+                      }));
+                    }),
+                AppButton(
+                    icon: Icon(
+                      _isAnimationRunning
+                          ? Icons.stop_circle_outlined
+                          : Icons.play_circle_fill,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isAnimationRunning = !_isAnimationRunning;
+                      });
+                    })
+              ],
+            ))
+      ]),
     );
   }
 }
