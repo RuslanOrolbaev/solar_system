@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:solar_system/constants.dart';
 import 'package:solar_system/model/planet.dart';
 import 'package:solar_system/model/providers/planet_list_provider.dart';
 import 'package:solar_system/view/add_planet_screen.dart';
@@ -17,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isAnimationRunning = false;
+  late List<Planet> planets;
 
   Planet mercury = Planet(
       radius: 10,
@@ -39,27 +42,28 @@ class _HomeScreenState extends State<HomeScreen> {
       distanceFromCenter: 150,
       angleInDegrees: 45);
 
-  Planet uran = Planet(
+  Planet uranium = Planet(
       radius: 25,
       color: Colors.indigo,
       speed: 20,
       distanceFromCenter: 500,
       angleInDegrees: 160);
 
-  List<Planet> planets = PlanetListProvider.instance.planetList;
-
   @override
   void initState() {
+    _logger.info(initMessage);
+    planets = context.read<PlanetListProvider>().planetList;
     planets.add(mercury);
     planets.add(earth);
     planets.add(jupiter);
-    // planets.add(uran);
+    planets.add(uranium);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _logger.info('running build');
+    context.watch<PlanetListProvider>();
+    _logger.info(buildMessage);
     return Scaffold(
       body: Stack(children: [
         SolarBuilder(planets: planets, animationRunning: _isAnimationRunning),

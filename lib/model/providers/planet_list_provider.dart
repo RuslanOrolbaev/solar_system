@@ -1,11 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:solar_system/model/planet.dart';
 
-class PlanetListProvider {
-  PlanetListProvider._createSingleton();
+class PlanetListProvider extends ChangeNotifier {
+  List<Planet> _planetList = [];
 
-  static final PlanetListProvider _instance =
-      PlanetListProvider._createSingleton();
-  static PlanetListProvider get instance => _instance;
+  List<Planet> get planetList => _planetList;
 
-  List<Planet> planetList = [];
+  set planetList(List<Planet> value) {
+    _planetList = value;
+    notifyListeners();
+  }
+
+  void add(Planet planet) {
+    _planetList.add(planet);
+    notifyListeners();
+  }
+
+  void clear() {
+    _planetList.clear();
+    notifyListeners();
+  }
 }
