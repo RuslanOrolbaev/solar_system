@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
 import 'package:solar_system/view/home_screen.dart';
 
@@ -16,6 +17,9 @@ class SolarSystem extends StatelessWidget {
       title: 'Solar system test task',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.fredokaOneTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       home: const HomeScreen(),
     );
@@ -27,7 +31,7 @@ void _initLogging() {
   Logger.root.onRecord.listen((record) {
     if (kDebugMode) {
       print(
-        '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
+          '${record.level.name}: ${record.time}: ${record.loggerName}: ${record.message}');
     }
   });
 }

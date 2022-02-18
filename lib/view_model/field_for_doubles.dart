@@ -11,21 +11,20 @@ class FieldForDoubles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
-      ],
-      decoration: InputDecoration(
-        hintText: hint,
-      ),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      // validator: (number) {
-      //   if (email != null && EmailValidator.validate(email)) {
-      //     return null;
-      //   } else {
-      //     return 'only integers or floating point numbers allowed';
-      //   }
-      // }
-    );
+        controller: controller,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*'))
+        ],
+        decoration: InputDecoration(
+          hintText: hint,
+        ),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        validator: (number) {
+          if (number != null && number.isNotEmpty) {
+            return null;
+          } else {
+            return 'the value has to be provided';
+          }
+        });
   }
 }

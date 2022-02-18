@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:solar_system/model/planet.dart';
+import 'package:solar_system/view/add_planet_screen.dart';
 import 'package:solar_system/view/app_button.dart';
 import 'package:solar_system/view_model/solar_builder.dart';
 
@@ -73,9 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AppButton(
-                    icon: Icon(Icons.add_circle),
+                    icon: const Icon(Icons.add_circle),
                     onPressed: () {
-                      print('something');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const AddPlanetScreen();
+                      }));
                     }),
                 AppButton(
                     icon: Icon(
