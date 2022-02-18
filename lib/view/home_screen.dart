@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -28,35 +29,45 @@ class _HomeScreenState extends State<HomeScreen> {
       distanceFromCenter: 120,
       angleInDegrees: 0);
 
-  Planet jupiter = Planet(
-      radius: 50,
-      color: Colors.red,
-      speed: 5,
-      distanceFromCenter: 300,
-      angleInDegrees: 180);
+  Planet venus = Planet(
+      radius: 20,
+      color: Colors.green,
+      speed: 10,
+      distanceFromCenter: 150,
+      angleInDegrees: 40);
 
   Planet earth = Planet(
-      radius: 20,
-      color: Colors.blue,
-      speed: 40,
-      distanceFromCenter: 150,
-      angleInDegrees: 45);
-
-  Planet uranium = Planet(
       radius: 25,
-      color: Colors.indigo,
+      color: Colors.blue,
+      speed: 14,
+      distanceFromCenter: 200,
+      angleInDegrees: 300);
+
+  Planet mars = Planet(
+      radius: 23,
+      color: Colors.red,
       speed: 20,
-      distanceFromCenter: 500,
+      distanceFromCenter: 290,
       angleInDegrees: 160);
+
+  Planet jupiter = Planet(
+      radius: 50,
+      color: Colors.brown,
+      speed: 5,
+      distanceFromCenter: 400,
+      angleInDegrees: 180);
 
   @override
   void initState() {
     _logger.info(initMessage);
+    context.read<PlanetListProvider>().planetList = [
+      mercury,
+      venus,
+      earth,
+      mars,
+      jupiter
+    ];
     planets = context.read<PlanetListProvider>().planetList;
-    planets.add(mercury);
-    planets.add(earth);
-    planets.add(jupiter);
-    planets.add(uranium);
     super.initState();
   }
 
