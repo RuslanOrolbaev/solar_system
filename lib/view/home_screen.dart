@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:solar_system/model/calculation_helpers/calculate_scale_modifier.dart';
-import 'package:solar_system/model/calculation_helpers/farest_planet_distance.dart';
-import 'package:solar_system/model/space_object.dart';
+import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'package:solar_system/constants.dart';
 import 'package:solar_system/model/planet.dart';
-import 'package:solar_system/view_model/space_object_widget.dart';
+import 'package:solar_system/model/providers/planet_list_provider.dart';
+import 'package:solar_system/view/add_planet_screen.dart';
+import 'package:solar_system/view/app_button.dart';
+import 'package:solar_system/view_model/solar_builder.dart';
+
+Logger _logger = Logger('Home screen');
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,57 +18,92 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Size _size;
-
-  SpaceObject sun = SpaceObject(color: Colors.yellow, radius: 50);
+  bool _isAnimationRunning = false;
+  late List<Planet> planets;
 
   Planet mercury = Planet(
-      radius: 30,
+      radius: 10,
       color: Colors.brown,
-      speed: 5,
-      distanceFromCenter: 50,
-      angleInDegrees: 80.0);
+      speed: 6,
+      distanceFromCenter: 120,
+      angleInDegrees: 0);
+
+  Planet venus = Planet(
+      radius: 20,
+      color: Colors.green,
+      speed: 10,
+      distanceFromCenter: 150,
+      angleInDegrees: 40);
+
+  Planet earth = Planet(
+      radius: 25,
+      color: Colors.blue,
+      speed: 14,
+      distanceFromCenter: 200,
+      angleInDegrees: 300);
+
+  Planet mars = Planet(
+      radius: 23,
+      color: Colors.red,
+      speed: 20,
+      distanceFromCenter: 290,
+      angleInDegrees: 160);
 
   Planet jupiter = Planet(
       radius: 50,
-      color: Colors.red,
+      color: Colors.brown,
       speed: 5,
-      distanceFromCenter: 300,
+      distanceFromCenter: 400,
       angleInDegrees: 180);
-
-  List<Planet> planets = [];
 
   @override
   void initState() {
-    planets.add(mercury);
-    planets.add(jupiter);
+    _logger.info(initMessage);
+    context.read<PlanetListProvider>().planetList = [
+      mercury,
+      venus,
+      earth,
+      mars,
+      jupiter
+    ];
+    planets = context.read<PlanetListProvider>().planetList;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _size = MediaQuery.of(context).size;
-
-    return Scaffold(body: Stack(children: solarBuilder(sun, planets, _size)));
+    context.watch<PlanetListProvider>();
+    _logger.info(buildMessage);
+    return Scaffold(
+      body: Stack(children: [
+        SolarBuilder(planets: planets, animationRunning: _isAnimationRunning),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppButton(
+                    icon: const Icon(Icons.add_circle),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const AddPlanetScreen();
+                      }));
+                    }),
+                AppButton(
+                    icon: Icon(
+                      _isAnimationRunning
+                          ? Icons.stop_circle_outlined
+                          : Icons.play_circle_fill,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isAnimationRunning = !_isAnimationRunning;
+                      });
+                    })
+              ],
+            ))
+      ]),
+    );
   }
-}
-
-List<Widget> solarBuilder(
-    SpaceObject sun, List<Planet> planets, Size screenSize) {
-  Offset screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
-  double longestDistance = longestPlanetDistance(planets);
-  double scaleModifier = calculateScaleModifier(screenSize, longestDistance);
-  List<Widget> spaceObjectWidgets = [
-    SpaceObjectWidget(
-        spaceObject: sun,
-        scaleModifier: scaleModifier,
-        screenCenter: screenCenter)
-  ];
-  for (Planet planet in planets) {
-    spaceObjectWidgets.add(SpaceObjectWidget(
-        spaceObject: planet,
-        scaleModifier: scaleModifier,
-        screenCenter: screenCenter));
-  }
-  return spaceObjectWidgets;
 }
