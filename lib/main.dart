@@ -16,7 +16,7 @@ class SolarSystem extends StatelessWidget {
     return MaterialApp(
       title: 'Solar system test task',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         textTheme: GoogleFonts.fredokaOneTextTheme(
           Theme.of(context).textTheme,
         ),

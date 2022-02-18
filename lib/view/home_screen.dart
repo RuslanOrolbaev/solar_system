@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:solar_system/model/planet.dart';
+import 'package:solar_system/model/providers/planet_list_provider.dart';
 import 'package:solar_system/view/add_planet_screen.dart';
 import 'package:solar_system/view/app_button.dart';
 import 'package:solar_system/view_model/solar_builder.dart';
@@ -15,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Size _screenSize;
   bool _isAnimationRunning = false;
 
   Planet mercury = Planet(
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       distanceFromCenter: 500,
       angleInDegrees: 160);
 
-  List<Planet> planets = [];
+  List<Planet> planets = PlanetListProvider.instance.planetList;
 
   @override
   void initState() {
@@ -60,14 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     _logger.info('running build');
-    _screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Stack(children: [
-        SolarBuilder(
-            planets: planets,
-            screenSize: _screenSize,
-            animationRunning: _isAnimationRunning),
+        SolarBuilder(planets: planets, animationRunning: _isAnimationRunning),
         Align(
             alignment: Alignment.bottomCenter,
             child: Row(

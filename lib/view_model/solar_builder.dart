@@ -12,13 +12,9 @@ Logger _logger = Logger('SolarBuilder');
 
 class SolarBuilder extends StatefulWidget {
   const SolarBuilder(
-      {required this.planets,
-      required this.screenSize,
-      this.animationRunning = true,
-      Key? key})
+      {required this.planets, this.animationRunning = true, Key? key})
       : super(key: key);
   final List<Planet> planets;
-  final Size screenSize;
   final bool animationRunning;
 
   @override
@@ -35,11 +31,6 @@ class _SolarBuilderState extends State<SolarBuilder> {
   @override
   void initState() {
     _logger.info('running initState');
-    _screenCenter =
-        Offset(widget.screenSize.width / 2, widget.screenSize.height / 2);
-    _longestDistance = longestPlanetDistance(widget.planets);
-    _scaleModifier =
-        calculateScaleModifier(widget.screenSize, _longestDistance);
     _timer = Timer.periodic(
         const Duration(microseconds: frameRenewalTimeInMicroseconds),
         drawFrame);
@@ -56,6 +47,8 @@ class _SolarBuilderState extends State<SolarBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    calculateScale(screenSize);
     List<Widget> spaceObjects = [];
     spaceObjects.add(CustomPaint(
         painter: PaintSpaceObject(
@@ -86,5 +79,11 @@ class _SolarBuilderState extends State<SolarBuilder> {
       }
       setState(() {});
     }
+  }
+
+  calculateScale(Size screenSize) {
+    _screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
+    _longestDistance = longestPlanetDistance(widget.planets);
+    _scaleModifier = calculateScaleModifier(screenSize, _longestDistance);
   }
 }

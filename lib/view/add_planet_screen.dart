@@ -1,6 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:solar_system/model/planet.dart';
+import 'package:solar_system/model/providers/color_provider.dart';
+import 'package:solar_system/model/providers/planet_list_provider.dart';
 import 'package:solar_system/view_model/color_picker_button.dart';
 import 'package:solar_system/view_model/field_for_doubles.dart';
 import 'package:logging/logging.dart';
@@ -23,12 +24,14 @@ class _AddPlanetScreenState extends State<AddPlanetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.info('running build');
     return Scaffold(
         body: SafeArea(
             child: Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Center(
               child: Text(
@@ -47,20 +50,38 @@ class _AddPlanetScreenState extends State<AddPlanetScreen> {
             controller: _speedFieldController,
             hint: 'enter speed',
           ),
-          Center(child: ColorPickerButton()),
-          Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    FormState formState = _formKey.currentState!;
-                    if (formState.validate()) {
-                      _logger.info('valid');
-                    } else {
-                      (_logger.info('not valid'));
-                    }
-                  },
-                  child: const Text('Add')))
+          const Center(child: ColorPickerButton()),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(double.maxFinite, 60),
+                    shape: const ContinuousRectangleBorder()),
+                onPressed: () {
+                  FormState formState = _formKey.currentState!;
+                  if (formState.validate()) {
+                    PlanetListProvider.instance.planetList.add(Planet(
+                        radius: double.parse(_radiusFieldController.text),
+                        speed: double.parse(_speedFieldController.text),
+                        distanceFromCenter:
+                            double.parse(_distanceFieldController.text),
+                        color: ColorProvider.instance.color!,
+                        angleInDegrees: 0));
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('ADD PLANET')),
+          )
         ],
       ),
     )));
+  }
+
+  @override
+  void dispose() {
+    _distanceFieldController.dispose();
+    _speedFieldController.dispose();
+    _radiusFieldController.dispose();
+    super.dispose();
   }
 }
